@@ -720,10 +720,12 @@ html,
 
                     #text02 a {
                       text-decoration: underline;
+                      transition: color 0.25s ease;
                     }
 
                     #text02 a:hover {
                       text-decoration: none;
+                      color: #F5A9B8 !important;
                     }
 
                     #text02 span.p:nth-child(n + 2) {
@@ -744,10 +746,12 @@ html,
 
                     #text08 a {
                       text-decoration: underline;
+                      transition: color 0.25s ease;
                     }
 
                     #text08 a:hover {
                       text-decoration: none;
+                      color: #F5A9B8 !important;
                     }
 
                     #text08 span.p:nth-child(n + 2) {
@@ -1071,7 +1075,7 @@ html,
 
                     #gallery01 ul li .thumbnail {
                       display: block;
-                      transition: none;
+                      transition: border-color 0.25s ease;
                     }
 
                     #gallery01 ul li img {
@@ -1081,6 +1085,10 @@ html,
 
                     #gallery01 ul li .thumbnail img {
                       transition: none;
+                    }
+
+                    #gallery01 ul li .thumbnail:hover {
+                      border-color: #F5A9B8 !important;
                     }
 
                     .icons {

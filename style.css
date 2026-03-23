@@ -678,10 +678,12 @@ html,
 
                     #text04 a {
                       text-decoration: underline;
+                      transition: color 0.25s ease;
                     }
 
                     #text04 a:hover {
                       text-decoration: none;
+                      color: #F5A9B8 !important;
                     }
 
                     #text04 span.p:nth-child(n + 2) {

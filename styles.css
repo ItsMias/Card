@@ -1,0 +1,93 @@
+/* ============================================================
+   ITSMIAS — portfolio site
+   Shared styles for index.html (home) and project.html (case studies)
+   ============================================================ */
+
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; scrollbar-width:none; -ms-overflow-style:none; }
+body{ margin:0; background:#0b0717; }
+::selection{ background:#F5A9B8; color:#0b0717; }
+::-webkit-scrollbar{ width:0; height:0; display:none; }
+
+@keyframes projFade { from{ transform:translateY(14px); } to{ transform:translateY(0); } }
+
+/* ---- links ---- */
+.mias-link{ transition:color .25s ease, opacity .25s ease; }
+.mias-link:hover{ color:#57e0dd !important; }
+
+/* nav links — sliding underline matching the scroll sliver */
+.mias-navlink{ position:relative; }
+.mias-navlink::after{ content:""; position:absolute; left:0; right:0; bottom:-7px; height:2px; background:#57e0dd; box-shadow:0 0 8px rgba(87,224,221,.5); transform:scaleX(0); transform-origin:left; transition:transform .3s cubic-bezier(.2,.7,.2,1); }
+.mias-navlink:hover::after{ transform:scaleX(1); }
+/* wordmark has .42em letter-spacing → trailing gap; trim the underline */
+#nav-wordmark.mias-navlink::after{ right:.42em; }
+
+/* ---- buttons — glow only, no bob ---- */
+.mias-btn{ transition:box-shadow .35s ease, background .25s ease; }
+.mias-btn:hover{ box-shadow:0 0 0 1px rgba(87,224,221,.4), 0 14px 34px -10px rgba(87,224,221,.6); }
+
+/* ---- external links (case-study sidebar/body) ---- */
+.ext-link{ transition:color .2s ease; }
+.ext-link:hover{ color:#57e0dd !important; }
+
+/* ---- socials — icon glow only, no box ---- */
+.mias-social{ transition:color .25s ease, filter .3s ease; }
+.mias-social:hover{ color:#57e0dd !important; filter:drop-shadow(0 0 8px rgba(87,224,221,.8)); }
+
+/* ---- work cards (home) ---- */
+.mias-card{ position:relative; transition:transform .45s cubic-bezier(.2,.7,.2,1), border-color .45s ease, box-shadow .45s ease; }
+.mias-card:hover{ transform:translateY(-8px) scale(1.025); border-color:rgba(87,224,221,.5) !important; box-shadow:0 26px 50px -18px rgba(87,224,221,.45), 0 0 0 1px rgba(87,224,221,.2); }
+.mias-card-img{ transition:transform .7s cubic-bezier(.2,.7,.2,1); }
+.mias-feature:hover .mias-card-img{ transform:scale(1.06); }
+/* clip the image wrapper with clip-path so the scaling image can't
+   leak past the rounded corners while the card is being scaled */
+.mias-feature > div:first-child{
+  border-radius:4px;
+  clip-path:inset(0 round 4px);
+  -webkit-mask-image:-webkit-radial-gradient(#fff,#000);
+          mask-image:radial-gradient(#fff,#000);
+  will-change:transform;
+}
+.mias-cta{ display:inline-flex; align-items:flex-start; gap:8px; font-family:'Outfit',sans-serif; font-weight:600; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#57e0dd; max-height:0; opacity:0; overflow:hidden; transform:translateX(-6px); transition:max-height .5s ease, opacity .4s ease, transform .4s ease; }
+.mias-card:hover .mias-cta{ max-height:40px; opacity:1; transform:translateX(0); margin-top:7px; }
+.mias-arrow{ margin-top:1px; flex-shrink:0; }
+
+/* ---- case-study banner ---- */
+.mias-banner img, .mias-banner{ transition:filter .5s ease; }
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+.mias-hamburger{ display:none; cursor:pointer; }
+#mias-mobile-menu{ display:none; }
+@media (min-width:761px){ #mias-mobile-menu{ display:none !important; } }
+
+@media (max-width:760px){
+  .mias-nav{ padding-left:22px !important; padding-right:22px !important; }
+  .mias-navlinks{ display:none !important; }
+  .mias-hamburger{ display:flex !important; }
+  /* always reveal card CTA on touch */
+  .mias-cta{ max-height:40px !important; opacity:1 !important; transform:translateX(0) !important; margin-top:7px !important; }
+  /* case study: stack the sticky sidebar */
+  article[id^="proj-"] > div[style*="320px 1fr"]{ grid-template-columns:1fr !important; }
+  article[id^="proj-"] aside{ position:static !important; }
+}
+
+@media (max-width:640px){
+  #work, #about, #vouches, #contact, .mias-hero-pad{ padding-left:22px !important; padding-right:22px !important; }
+  div[style*="repeat(auto-fit"]{ grid-template-columns:1fr !important; }
+  div[style*="max-width: 1180px"]{ padding-left:22px !important; padding-right:22px !important; }
+  .mias-contact-foot{ margin-left:-22px !important; margin-right:-22px !important; padding-left:22px !important; padding-right:22px !important; }
+  #contact h2{ font-size:clamp(34px,11vw,92px) !important; }
+  article[id^="proj-"], .mias-foot{ padding-left:22px !important; padding-right:22px !important; }
+}
+
+@media (max-width:560px){
+  article[id^="proj-"] h1{ white-space:normal !important; }
+  article[id^="proj-"] > div[style*="space-between; gap: 18px"]{ flex-direction:column !important; }
+  article[id^="proj-"] > div[style*="space-between; gap: 18px"] > a{ max-width:none !important; }
+}
+
+@media (max-width:380px){
+  #contact h2{ font-size:32px !important; }
+}

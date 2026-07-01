@@ -74,7 +74,7 @@ body{ margin:0; background:#0b0717; }
 }
 
 @media (max-width:640px){
-  #work, #about, #vouches, #contact, .mias-hero-pad{ padding-left:22px !important; padding-right:22px !important; }
+  #work, #about, #testimonials, #contact, .mias-hero-pad{ padding-left:22px !important; padding-right:22px !important; }
   div[style*="repeat(auto-fit"]{ grid-template-columns:1fr !important; }
   div[style*="max-width: 1180px"]{ padding-left:22px !important; padding-right:22px !important; }
   .mias-contact-foot{ margin-left:-22px !important; margin-right:-22px !important; padding-left:22px !important; padding-right:22px !important; }

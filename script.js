@@ -1,9 +1,3 @@
-/* ============================================================
-   ITSMIAS — portfolio site
-   Shared behaviour for index.html (home) and project.html.
-   Every feature is guarded by element presence, so this one
-   file runs safely on both pages.
-   ============================================================ */
 (function () {
   function init() {
     /* ---- mobile menu ---- */

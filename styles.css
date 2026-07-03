@@ -48,8 +48,10 @@ body{ margin:0; background:#0b0717; }
           mask-image:radial-gradient(#fff,#000);
   will-change:transform;
 }
-.mias-cta{ display:inline-flex; align-items:flex-start; gap:8px; font-family:'Outfit',sans-serif; font-weight:600; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#57e0dd; max-height:0; opacity:0; overflow:hidden; transform:translateX(-6px); transition:max-height .5s ease, opacity .4s ease, transform .4s ease; }
-.mias-card:hover .mias-cta{ max-height:40px; opacity:1; transform:translateX(0); margin-top:7px; }
+/* CTA space is always reserved (fixed height) so revealing it on hover
+   never changes the card's height and shifts the page */
+.mias-cta{ display:inline-flex; align-items:flex-start; gap:8px; font-family:'Outfit',sans-serif; font-weight:600; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#57e0dd; height:22px; margin-top:7px; opacity:0; transform:translateY(6px); transition:opacity .4s ease, transform .4s ease; }
+.mias-card:hover .mias-cta{ opacity:1; transform:translateY(0); }
 .mias-arrow{ margin-top:1px; flex-shrink:0; }
 
 /* ---- case-study banner ---- */
@@ -67,7 +69,7 @@ body{ margin:0; background:#0b0717; }
   .mias-navlinks{ display:none !important; }
   .mias-hamburger{ display:flex !important; }
   /* always reveal card CTA on touch */
-  .mias-cta{ max-height:40px !important; opacity:1 !important; transform:translateX(0) !important; margin-top:7px !important; }
+  .mias-cta{ opacity:1 !important; transform:none !important; }
   /* case study: stack the sticky sidebar */
   article[id^="proj-"] > div[style*="320px 1fr"]{ grid-template-columns:1fr !important; }
   article[id^="proj-"] aside{ position:static !important; }

@@ -35,19 +35,16 @@ body{ margin:0; background:#0b0717; }
 .mias-social:hover{ color:#57e0dd !important; filter:drop-shadow(0 0 8px rgba(87,224,221,.8)); }
 
 /* ---- work cards (home) ---- */
-.mias-card{ position:relative; transition:transform .45s cubic-bezier(.2,.7,.2,1), border-color .45s ease, box-shadow .45s ease; }
+.mias-card{ position:relative; isolation:isolate; transition:transform .45s cubic-bezier(.2,.7,.2,1), border-color .45s ease, box-shadow .45s ease; }
 .mias-card:hover{ transform:translateY(-8px) scale(1.025); border-color:rgba(87,224,221,.5) !important; box-shadow:0 26px 50px -18px rgba(87,224,221,.45), 0 0 0 1px rgba(87,224,221,.2); }
-.mias-card-img{ transition:transform .7s cubic-bezier(.2,.7,.2,1); }
-.mias-feature:hover .mias-card-img{ transform:scale(1.06); }
-/* clip the image wrapper with clip-path so the scaling image can't
-   leak past the rounded corners while the card is being scaled */
-.mias-feature > div:first-child{
-  border-radius:4px;
-  clip-path:inset(0 round 4px);
-  -webkit-mask-image:-webkit-radial-gradient(#fff,#000);
-          mask-image:radial-gradient(#fff,#000);
-  will-change:transform;
-}
+
+/* thumbnail: the img and its dark tint live inside one zoom container,
+   so the tint scales with the image and can never uncover it */
+.mias-thumb{ position:relative; aspect-ratio:16/9; overflow:hidden; isolation:isolate; background:#0e0820; }
+.mias-thumb-zoom{ position:absolute; inset:0; transition:transform .7s cubic-bezier(.2,.7,.2,1); }
+.mias-thumb-zoom::after{ content:""; position:absolute; inset:-1px; background:linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,.45) 78%, rgba(0,0,0,.85) 100%); pointer-events:none; }
+.mias-thumb-zoom img{ width:100%; height:100%; display:block; object-fit:cover; }
+.mias-feature:hover .mias-thumb-zoom{ transform:scale(1.06); }
 /* CTA space is always reserved (fixed height) so revealing it on hover
    never changes the card's height and shifts the page */
 .mias-cta{ display:inline-flex; align-items:flex-start; gap:8px; font-family:'Outfit',sans-serif; font-weight:600; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#57e0dd; height:22px; margin-top:7px; opacity:0; transform:translateY(6px); transition:opacity .4s ease, transform .4s ease; }

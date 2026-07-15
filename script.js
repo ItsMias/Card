@@ -205,8 +205,21 @@
       };
 
       var go = function (i) { if (i === cur) return; var prev = cur; cur = i; render(prev); };
-      tabs.forEach(function (t, k) { t.addEventListener('click', function () { go(k); }); });
+
+      /* cycle top-to-bottom every 7s, restarting the wait after a click so a
+         just-picked tab is never yanked away mid-read */
+      var cycle = null;
+      var stopCycle = function () { if (cycle) { clearInterval(cycle); cycle = null; } };
+      var startCycle = function () {
+        stopCycle();
+        cycle = setInterval(function () { go((cur + 1) % tabs.length); }, 7000);
+      };
+
+      tabs.forEach(function (t, k) {
+        t.addEventListener('click', function () { go(k); startCycle(); });
+      });
       render();
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) startCycle();
 
       /* keep each panel heading on a single line, scaling it down to fit */
       var panel = tabsWrap.querySelector('.mias-tabpanel');

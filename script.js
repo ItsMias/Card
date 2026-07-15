@@ -42,6 +42,39 @@
       onScroll();
     }
 
+    /* ---- testimonials link: rest the divider at the viewport bottom ----
+       On tall screens the section doesn't fill the viewport, so a plain
+       anchor jump already reveals the About text below the divider. Scroll
+       only far enough that the divider's bottom edge meets the viewport
+       bottom; never past the section top (short screens fall back to the
+       normal top alignment). */
+    var testi = document.getElementById('testimonials');
+    if (testi) {
+      var scrollToTestimonials = function (smooth) {
+        var aboutText = document.querySelector('#about h2');
+        var sectionTop = testi.getBoundingClientRect().top + window.scrollY;
+        var target = sectionTop;
+        if (aboutText) {
+          // stop right before the About heading enters the viewport, so the
+          // divider floats above the bottom edge instead of touching it
+          var aboutTextTop = aboutText.getBoundingClientRect().top + window.scrollY;
+          target = Math.min(sectionTop, aboutTextTop - window.innerHeight);
+        }
+        window.scrollTo({ top: Math.max(0, target), behavior: smooth ? 'smooth' : 'instant' });
+      };
+      document.querySelectorAll('a[href="#testimonials"]').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          e.preventDefault();
+          scrollToTestimonials(true);
+        });
+      });
+      if (location.hash === '#testimonials') {
+        scrollToTestimonials(false);
+        // images loading later shift section positions; settle once more
+        window.addEventListener('load', function () { scrollToTestimonials(false); });
+      }
+    }
+
     /* ---- rotating contact word (home only) ---- */
     var rot = document.getElementById('mias-rotator');
     var inner = document.getElementById('mias-rotator-inner');

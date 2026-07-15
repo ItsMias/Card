@@ -115,6 +115,87 @@
       });
     }
 
+    /* ---- what-i-do feature tabs (home only) ---- */
+    var tabsWrap = document.querySelector('.mias-tabs');
+    if (tabsWrap) {
+      var tabs = [].slice.call(tabsWrap.querySelectorAll('.mias-tab'));
+      var panes = [].slice.call(tabsWrap.querySelectorAll('.mias-pane'));
+      var fills = tabs.map(function (t) { return t.querySelector('.mias-tab-fill'); });
+      var diamond = document.getElementById('mias-panel-diamond');
+      var cur = 1; // default: Technical Event Organisation
+
+      var render = function (prev) {
+        var down = prev === undefined || cur >= prev;
+        tabs.forEach(function (t, k) {
+          var on = k === cur;
+          t.setAttribute('aria-selected', on ? 'true' : 'false');
+          var f = fills[k];
+          if (f) {
+            if (on) {
+              // grow from the edge facing the previous tab (down = from top)
+              f.style.top = down ? '0' : 'auto';
+              f.style.bottom = down ? 'auto' : '0';
+              f.style.transition = 'height .4s cubic-bezier(.22,1,.36,1) .1s';
+            } else {
+              // shrink toward the newly selected tab, quickly
+              f.style.top = down ? 'auto' : '0';
+              f.style.bottom = down ? '0' : 'auto';
+              f.style.transition = 'height .2s cubic-bezier(.5,0,.8,.4)';
+            }
+            void f.offsetHeight; // apply the anchor before the height change
+            f.style.height = on ? '100%' : '0%';
+          }
+        });
+        if (diamond) {
+          // slide the diamond along the panel rail: top / middle / bottom,
+          // inset 22px from the rail ends so it never feels like falling off
+          var frac = tabs.length > 1 ? cur / (tabs.length - 1) : 0;
+          diamond.style.top = 'calc(' + (frac * 100) + '% + ' + (22 - frac * (22 * 2 + 9)) + 'px)';
+        }
+        panes.forEach(function (p, k) {
+          var on = k === cur;
+          p.style.visibility = on ? 'visible' : 'hidden';
+          p.style.opacity = on ? '1' : '0';
+          p.style.pointerEvents = on ? 'auto' : 'none';
+          if (on) {
+            var items = [].slice.call(p.querySelectorAll('.mias-pane-anim'));
+            var num = p.querySelector('.mias-pane-num');
+            items.forEach(function (el) { el.style.animation = 'none'; });
+            if (num) num.style.animation = 'none';
+            void p.offsetWidth; // reflow so the animations restart
+            items.forEach(function (el, j) {
+              el.style.animation = 'paneItemIn .55s cubic-bezier(.22,1,.36,1) ' + (j * 0.09) + 's both';
+            });
+            if (num) num.style.animation = 'paneNumIn .7s cubic-bezier(.22,1,.36,1) .12s both';
+          }
+        });
+      };
+
+      var go = function (i) { if (i === cur) return; var prev = cur; cur = i; render(prev); };
+      tabs.forEach(function (t, k) { t.addEventListener('click', function () { go(k); }); });
+      render();
+
+      /* keep each panel heading on a single line, scaling it down to fit */
+      var panel = tabsWrap.querySelector('.mias-tabpanel');
+      var headings = [].slice.call(tabsWrap.querySelectorAll('.mias-pane h3'));
+      var fitHeadings = function () {
+        if (!panel) return;
+        var cs = getComputedStyle(panel);
+        // 33px = diamond/rail column (9px) + flex gap (24px)
+        var avail = panel.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 33;
+        if (avail <= 0) return;
+        headings.forEach(function (h) {
+          var base = 38; // max size
+          h.style.fontSize = base + 'px';
+          var w = h.scrollWidth;
+          if (w > avail) h.style.fontSize = Math.floor(base * (avail / w)) + 'px';
+        });
+      };
+      fitHeadings();
+      window.addEventListener('resize', fitHeadings);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitHeadings);
+    }
+
     /* ---- case-study routing (project.html only) ---- */
     if (document.getElementById('proj-horizon')) {
       var order = ['horizon', 'state', 'horizonmines', '6b6t'];

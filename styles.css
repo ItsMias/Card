@@ -88,6 +88,10 @@ body{ margin:0; background:#0b0717; }
 /* ---- case-study banner ---- */
 .mias-banner img, .mias-banner{ transition:filter .5s ease; }
 
+/* ---- live Discord presence (about) ---- */
+#mias-presence-name{ transition:color .25s ease; }
+.mias-presence:hover #mias-presence-name{ color:#57e0dd; }
+
 /* ============================================================
    Responsive
    ============================================================ */

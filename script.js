@@ -229,6 +229,159 @@
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitHeadings);
     }
 
+    /* ---- live Discord presence via Lanyard (about, home only) ---- */
+    var presence = document.getElementById('mias-presence');
+    if (presence) {
+      var USER_ID = '615580983881760787';
+      var pAvatar = document.getElementById('mias-presence-avatar');
+      var pDeco = document.getElementById('mias-presence-deco');
+      var pDot = document.getElementById('mias-presence-dot');
+      var pName = document.getElementById('mias-presence-name');
+      var pGuild = document.getElementById('mias-presence-guild');
+      var pGuildBadge = document.getElementById('mias-presence-guild-badge');
+      var pGuildTag = document.getElementById('mias-presence-guild-tag');
+      var pBadges = document.getElementById('mias-presence-badges');
+      var pStatus = document.getElementById('mias-presence-status');
+      var pActivity = document.getElementById('mias-presence-activity');
+      var pActivityIcon = document.getElementById('mias-presence-activity-icon');
+      var pActivityText = document.getElementById('mias-presence-activity-text');
+      var STATUS_COLORS = { online: '#23a55a', idle: '#f0b232', dnd: '#f23f43', offline: '#80848e' };
+      var STATUS_FALLBACK = 'May the odds be ever in your favor'; // shown while offline
+      var setActivityIcon = function (url) {
+        if (url) { pActivityIcon.src = url; pActivityIcon.style.display = 'block'; }
+        else pActivityIcon.style.display = 'none';
+      };
+      pActivityIcon.addEventListener('error', function () { pActivityIcon.style.display = 'none'; });
+      // icon straight from the activity's own artwork; games without rich
+      // presence art fall back to their app icon via Discord's public API
+      var appIconCache = {};
+      var resolveActivityIcon = function (act, cb) {
+        var assets = act.assets || {};
+        var img = assets.large_image || assets.small_image;
+        if (img) {
+          if (img.indexOf('mp:external') === 0) return cb('https://media.discordapp.net/' + img.slice(3));
+          if (img.indexOf('spotify:') === 0) return cb('https://i.scdn.co/image/' + img.slice(8));
+          if (act.application_id) return cb('https://cdn.discordapp.com/app-assets/' + act.application_id + '/' + img + '.png?size=64');
+        }
+        if (!act.application_id) return cb('');
+        if (appIconCache[act.application_id] !== undefined) return cb(appIconCache[act.application_id]);
+        fetch('https://discord.com/api/v10/applications/' + act.application_id + '/rpc')
+          .then(function (r) { return r.json(); })
+          .then(function (app) {
+            var url = app.icon ? 'https://cdn.discordapp.com/app-icons/' + act.application_id + '/' + app.icon + '.png?size=64' : '';
+            appIconCache[act.application_id] = url;
+            cb(url);
+          })
+          .catch(function () { cb(''); });
+      };
+      // profile badges aren't in Lanyard's API, so they're declared here (assets
+      // live in assets/badges/ because discord.com blocks hotlinking); the nitro
+      // and booster badge tiers advance automatically from their start dates
+      var NITRO_SINCE = new Date(2026, 3, 10); // 10 April 2026
+      var BOOST_SINCE = new Date(2026, 3, 10); // 10 April 2026
+      var NITRO_TIERS = [[72, 'opal'], [60, 'ruby'], [36, 'emerald'], [24, 'diamond'], [12, 'platinum'], [6, 'gold'], [3, 'silver'], [1, 'bronze']];
+      var BOOST_TIERS = [24, 18, 15, 12, 9, 6, 3, 2, 1];
+      var monthsSince = function (d) {
+        var now = new Date();
+        return (now.getFullYear() - d.getFullYear()) * 12 + (now.getMonth() - d.getMonth()) - (now.getDate() < d.getDate() ? 1 : 0);
+      };
+      var nitroMonths = monthsSince(NITRO_SINCE);
+      var nitroTier = 'bronze';
+      for (var nt = 0; nt < NITRO_TIERS.length; nt++) {
+        if (nitroMonths >= NITRO_TIERS[nt][0]) { nitroTier = NITRO_TIERS[nt][1]; break; }
+      }
+      var boostMonths = monthsSince(BOOST_SINCE);
+      var boostTier = 1;
+      for (var bt = 0; bt < BOOST_TIERS.length; bt++) {
+        if (boostMonths >= BOOST_TIERS[bt]) { boostTier = BOOST_TIERS[bt]; break; }
+      }
+      var BADGES = [
+        { src: 'assets/badges/nitro-' + nitroTier + '.png', title: 'Nitro ' + nitroTier.charAt(0).toUpperCase() + nitroTier.slice(1) },
+        { src: 'assets/badges/hypesquad-brilliance.png', title: 'HypeSquad Brilliance' },
+        { src: 'assets/badges/boost-' + boostTier + 'm.png', title: 'Server Booster' },
+        { src: 'assets/badges/gifting-legend.png', title: 'Gifting Legend' }
+      ];
+      BADGES.forEach(function (b) {
+        var img = document.createElement('img');
+        img.src = b.src;
+        img.alt = b.title;
+        img.title = b.title;
+        img.style.cssText = 'width:22px; height:22px; object-fit:contain; display:block;';
+        pBadges.appendChild(img);
+      });
+      var renderPresence = function (d) {
+        var u = d.discord_user || {};
+
+        if (u.avatar) {
+          var ext = u.avatar.indexOf('a_') === 0 ? 'gif' : 'webp';
+          pAvatar.src = 'https://cdn.discordapp.com/avatars/' + USER_ID + '/' + u.avatar + '.' + ext + '?size=128';
+        } else {
+          pAvatar.src = 'https://cdn.discordapp.com/embed/avatars/0.png';
+        }
+        var deco = u.avatar_decoration_data;
+        if (deco && deco.asset) {
+          pDeco.src = 'https://cdn.discordapp.com/avatar-decoration-presets/' + deco.asset + '.png?size=160&passthrough=true';
+          pDeco.style.display = 'block';
+        } else {
+          pDeco.style.display = 'none';
+        }
+
+        pName.textContent = u.global_name || u.display_name || u.username || '';
+
+        var guild = u.primary_guild;
+        if (guild && guild.tag && guild.identity_enabled !== false && guild.identity_guild_id && guild.badge) {
+          pGuildBadge.src = 'https://cdn.discordapp.com/clan-badges/' + guild.identity_guild_id + '/' + guild.badge + '.png?size=32';
+          pGuildTag.textContent = guild.tag;
+          pGuild.style.display = 'inline-flex';
+        } else {
+          pGuild.style.display = 'none';
+        }
+
+        var game = null, custom = null;
+        (d.activities || []).forEach(function (a) {
+          if (a.type === 0 && !game) game = a;
+          if (a.type === 4 && !custom) custom = a;
+        });
+
+        var isOffline = (d.discord_status || 'offline') === 'offline';
+
+        var statusText = (custom && custom.state) ? custom.state : '';
+        if (statusText && custom.emoji && !custom.emoji.id) statusText = custom.emoji.name + ' ' + statusText;
+        // Discord stops reporting the custom status while offline; show a fixed
+        // line instead (kept in sync by hand -- no visitor-side storage)
+        if (!statusText && isOffline) statusText = STATUS_FALLBACK;
+        pStatus.textContent = statusText;
+        pStatus.style.display = statusText ? 'block' : 'none';
+
+        var actText = '';
+        if (game) {
+          actText = 'Playing ' + game.name;
+          resolveActivityIcon(game, setActivityIcon);
+        } else if (d.listening_to_spotify && d.spotify) {
+          actText = 'Listening to ' + d.spotify.song;
+          setActivityIcon('assets/icons/spotify.svg'); // always the Spotify logo, never album art
+        } else if (isOffline) {
+          actText = 'Currently offline...';
+          setActivityIcon('');
+        } else {
+          setActivityIcon('');
+        }
+        pActivityText.textContent = actText;
+        pActivity.style.display = actText ? 'flex' : 'none';
+
+        pDot.style.background = STATUS_COLORS[d.discord_status] || STATUS_COLORS.offline;
+        presence.style.display = 'block';
+      };
+      var pollPresence = function () {
+        fetch('https://api.lanyard.rest/v1/users/' + USER_ID)
+          .then(function (r) { return r.json(); })
+          .then(function (j) { if (j && j.success) renderPresence(j.data); })
+          .catch(function () {}); // Lanyard down: the row stays hidden / keeps its last state
+      };
+      pollPresence();
+      setInterval(pollPresence, 60000);
+    }
+
     /* ---- case-study routing (project.html only) ---- */
     if (document.getElementById('proj-horizon')) {
       var order = ['horizon', 'state', 'horizonmines', '6b6t'];

@@ -70,7 +70,7 @@ body{ margin:0; background:#0b0717; }
 
 /* ---- work cards (home) ---- */
 .mias-card{ position:relative; isolation:isolate; transition:transform .45s cubic-bezier(.2,.7,.2,1), border-color .45s ease, box-shadow .45s ease; }
-.mias-card:hover{ transform:translateY(-8px) scale(1.025); border-color:rgba(87,224,221,.5) !important; box-shadow:0 26px 50px -18px rgba(87,224,221,.45), 0 0 0 1px rgba(87,224,221,.2); }
+.mias-card:hover{ transform:translateY(-8px) scale(1.025); border-color:rgba(245,169,184,.5) !important; box-shadow:0 26px 50px -18px rgba(245,169,184,.45), 0 0 0 1px rgba(245,169,184,.2); }
 
 /* thumbnail: the img and its dark tint live inside one zoom container,
    so the tint scales with the image and can never uncover it */
@@ -81,7 +81,7 @@ body{ margin:0; background:#0b0717; }
 .mias-feature:hover .mias-thumb-zoom{ transform:scale(1.06); }
 /* CTA space is always reserved (fixed height) so revealing it on hover
    never changes the card's height and shifts the page */
-.mias-cta{ display:inline-flex; align-items:flex-start; gap:8px; font-family:'Outfit',sans-serif; font-weight:600; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#F5A9B8; height:22px; margin-top:7px; opacity:0; transform:translateY(6px); transition:opacity .4s ease, transform .4s ease; }
+.mias-cta{ display:inline-flex; align-items:flex-start; gap:8px; font-family:'Outfit',sans-serif; font-weight:600; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#57e0dd; height:22px; margin-top:7px; opacity:0; transform:translateY(6px); transition:opacity .4s ease, transform .4s ease; }
 .mias-card:hover .mias-cta{ opacity:1; transform:translateY(0); }
 .mias-arrow{ margin-top:1px; flex-shrink:0; }
 

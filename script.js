@@ -377,7 +377,7 @@
           actText = 'Currently offline...';
           setActivityIcon('');
         } else {
-          actText = 'Currently doing nothing...';
+          actText = 'Currently not doing anything...';
           setActivityIcon('');
         }
         pActivityText.textContent = actText;

@@ -216,7 +216,7 @@
       };
 
       tabs.forEach(function (t, k) {
-        t.addEventListener('click', function () { go(k); startCycle(); });
+        t.addEventListener('click', function () { stopCycle(); go(k); });
       });
       render();
       if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) startCycle();

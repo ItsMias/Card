@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ItsMias's Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preload" as="image" href="assets/banner.webp" fetchpriority="high">
 <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&amp;family=Outfit:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
@@ -40,8 +41,8 @@
   </div>
 
   <!-- ============ HERO ============ -->
-  <div id="home" style="position:relative; min-height:100vh; display:flex; flex-direction:column;">
-    <img src="assets/banner.png" alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 38%;">
+  <div id="home" style="position:relative; min-height:100vh; display:flex; flex-direction:column; background:url(data:image/webp;base64,UklGRsAAAABXRUJQVlA4ILQAAACwBQCdASogABIAPtFUo0uoJKMhsAgBABoJaACdMuOCwEADqsWbQbkaEZGOwKSM4D1Cn5n3uFAA/vQiWOcyzvPBC2wyvTQdYvETzCskl9bv9Sruku6Pb7n3gcEOxjUGSP/saEnHh+vB6WkBFuIciBA0PJ6nzUVKE1IHh5vPEftUzj0Jj7IotW0JcMSCZ4aHM8wCdVzvcPzgW+ceDjs8Yidus2VpqYBS1+jtTR/ihuHJj+MAAAA=) center 38% / cover no-repeat;">
+    <img src="assets/banner.webp" alt="" fetchpriority="high" decoding="async" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 38%;">
     <div style="position:absolute; inset:0; background:linear-gradient(180deg, rgba(11,7,23,.72) 0%, rgba(11,7,23,.12) 28%, rgba(11,7,23,.5) 68%, rgba(11,7,23,1) 100%);"></div>
     <div style="position:absolute; inset:0; background:linear-gradient(90deg, rgba(11,7,23,.8) 0%, rgba(11,7,23,.08) 52%, rgba(11,7,23,0) 100%);"></div>
 
@@ -67,7 +68,7 @@
       <a href="projects/#horizon" class="mias-card mias-feature" style="position:relative; display:block; text-decoration:none; background:#140c2a; border:1px solid rgba(255,255,255,.07); border-radius:4px; overflow:hidden;">
         <div class="mias-thumb">
           <div class="mias-thumb-zoom">
-            <img src="assets/horizon-thumb.png" alt="Beyond The Horizon thumbnail" onerror="this.style.display='none'">
+            <img src="assets/horizon-thumb.webp" alt="Beyond The Horizon thumbnail" loading="lazy" decoding="async" onerror="this.style.display='none'">
           </div>
           <div style="position:absolute; left:0; right:0; bottom:0; z-index:2; display:flex; align-items:flex-end; justify-content:space-between; gap:16px; padding:18px 22px;">
             <span style="display:inline-flex; align-items:center; gap:8px; font-weight:500; font-size:14px; color:#ece9f5; text-shadow:0 1px 6px rgba(0,0,0,.5);"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink: 0; fill: #FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"></path></svg>@The_Horizon</span><span style="font-weight: 600; font-size: 14px; letter-spacing: .01em; color: #F5A9B8; text-shadow: 0 1px 6px rgba(0,0,0,.5)">Production Manager</span>
@@ -83,7 +84,7 @@
       <a href="projects/#state" class="mias-card mias-feature" style="position:relative; display:block; text-decoration:none; background:#140c2a; border:1px solid rgba(255,255,255,.07); border-radius:4px; overflow:hidden;">
         <div class="mias-thumb">
           <div class="mias-thumb-zoom">
-            <img src="assets/ish-thumb.png" alt="ish's State thumbnail" onerror="this.style.display='none'">
+            <img src="assets/ish-thumb.webp" alt="ish's State thumbnail" loading="lazy" decoding="async" onerror="this.style.display='none'">
           </div>
           <div style="position:absolute; left:0; right:0; bottom:0; z-index:2; display:flex; align-items:flex-end; justify-content:space-between; gap:16px; padding:18px 22px;">
             <span style="display:inline-flex; align-items:center; gap:8px; font-weight:500; font-size:14px; color:#ece9f5; text-shadow:0 1px 6px rgba(0,0,0,.5);"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink: 0; fill: #FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"></path></svg>@ish</span><span style="font-weight: 600; font-size: 14px; letter-spacing: .01em; color: #F5A9B8; text-shadow: 0 1px 6px rgba(0,0,0,.5)">Event&nbsp; Staff</span>
@@ -100,7 +101,7 @@
     <!-- secondary row -->
     <div style="margin-top:26px; display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:26px;">
       <a href="projects/#horizonmines" class="mias-card" style="display:flex; align-items:center; gap:20px; text-decoration:none; background:#100a22; border:1px solid rgba(255,255,255,.06); border-radius:4px; padding:22px 24px;">
-        <img src="assets/horizonmines-logo.png" alt="HorizonMines logo" onerror="this.style.display='none'" style="flex-shrink:0; width:54px; height:54px; display:block; border-radius:4px; object-fit:cover; background:#1a1133;">
+        <img src="assets/horizonmines-logo.png" alt="HorizonMines logo" loading="lazy" decoding="async" onerror="this.style.display='none'" style="flex-shrink:0; width:54px; height:54px; display:block; border-radius:4px; object-fit:cover; background:#1a1133;">
         <div style="flex:1; min-width:0;">
           <h4 style="margin:0; font-family:'Syne GFix','Syne',sans-serif; font-weight:600; font-size:19px; color:#f3f1fa;">HorizonMines</h4>
           <p style="margin:5px 0 0; font-weight:300; font-size:13px; color:#8f86ad;">Passion project Minecraft server I've been working on since 2022</p>
@@ -110,7 +111,7 @@
       </a>
 
       <a href="projects/#6b6t" class="mias-card" style="display:flex; align-items:center; gap:20px; text-decoration:none; background:#100a22; border:1px solid rgba(255,255,255,.06); border-radius:4px; padding:22px 24px;">
-        <img src="assets/6b6t-logo.png" alt="6b6t logo" onerror="this.style.display='none'" style="flex-shrink:0; width:54px; height:54px; display:block; border-radius:4px; object-fit:cover; background:#1a1133;">
+        <img src="assets/6b6t-logo.png" alt="6b6t logo" loading="lazy" decoding="async" onerror="this.style.display='none'" style="flex-shrink:0; width:54px; height:54px; display:block; border-radius:4px; object-fit:cover; background:#1a1133;">
         <div style="flex:1; min-width:0;">
           <h4 style="margin:0; font-family:'Syne GFix','Syne',sans-serif; font-weight:600; font-size:19px; color:#f3f1fa;">6b6t</h4>
           <p style="margin:5px 0 0; font-weight:300; font-size:13px; color:#8f86ad;">Community &amp; Staff management for an anarchy server.</p>
@@ -272,7 +273,7 @@
 
   <!-- ============ CONTACT ============ -->
   <div id="contact" style="position:relative; padding:130px 56px 0; overflow:hidden;">
-    <img src="assets/banner.png" alt="" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 30%; opacity:.32;">
+    <img src="assets/banner.webp" alt="" loading="lazy" decoding="async" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 30%; opacity:.32;">
     <div style="position:absolute; inset:0; background:radial-gradient(120% 100% at 50% 100%, rgba(11,7,23,.6) 0%, rgba(11,7,23,.95) 60%, #0b0717 100%);"></div>
     <div style="position:relative; max-width:880px; margin:0 auto; display:flex; flex-direction:column; align-items:center; text-align:center;">
       <h2 style="margin: 0 0 22px; align-self:stretch; width:100%; font-family: 'Syne',sans-serif; font-weight: 800; font-size: clamp(44px,7vw,92px); line-height: .95; letter-spacing: -.02em; color: #f3f1fa; text-transform: uppercase; text-align: center; text-wrap:balance;">LET'S<br>CREATE<br><span id="mias-rotator" style="display:flex; align-items:center; justify-content:center; width:100%; transition:transform .55s cubic-bezier(.22,1,.36,1), opacity .55s cubic-bezier(.22,1,.36,1); will-change:transform,opacity;"><span id="mias-rotator-inner" style="display:inline-block; white-space:nowrap;">AN EVENT</span></span></h2>

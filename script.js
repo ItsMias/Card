@@ -374,10 +374,10 @@
           actText = 'Listening to ' + d.spotify.song;
           setActivityIcon('assets/icons/spotify.svg'); // always the Spotify logo, never album art
         } else if (isOffline) {
-          actText = 'Currently offline...';
+          actText = 'Offline...';
           setActivityIcon('');
         } else {
-          actText = 'Currently not doing anything...';
+          actText = 'Not doing anything...';
           setActivityIcon('');
         }
         pActivityText.textContent = actText;

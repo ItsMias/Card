@@ -42,6 +42,14 @@
       onScroll();
     }
 
+    /* ---- hero scroll cue: away while scrolled down, back at the top ---- */
+    var cue = document.querySelector('.mias-scrollcue');
+    if (cue) {
+      var syncCue = function () { cue.classList.toggle('is-gone', window.scrollY > 40); };
+      window.addEventListener('scroll', syncCue, { passive: true });
+      syncCue(); // opened part-way down: start hidden, no fade-out to see
+    }
+
     /* ---- testimonials link: rest the divider at the viewport bottom ----
        On tall screens the section doesn't fill the viewport, so a plain
        anchor jump already reveals the About text below the divider. Scroll

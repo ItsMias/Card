@@ -54,6 +54,15 @@
         <a href="#work" class="mias-btn" style="font-weight:500; font-size:13px; letter-spacing:.08em; text-transform:uppercase; color:#ece9f5; border:1px solid rgba(236,233,245,.28); padding:15px 28px; border-radius:2px; text-decoration:none;">See the work</a>
       </div>
     </div>
+
+    <!-- scroll cue: paired chevrons, calm at first, then pulsing cyan.
+         The strip stays click-through; only the padded link takes the tap. -->
+    <div class="mias-scrollcue" style="position:absolute; left:0; right:0; bottom:20px; z-index:3; display:flex; justify-content:center; pointer-events:none;">
+      <a class="mias-scrollcue-in" href="#work" aria-label="Scroll to previous work" style="display:flex; flex-direction:column; align-items:center; padding:12px 18px; color:#8f86ad; text-decoration:none;">
+        <svg class="mias-scrollcue-chev" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+        <svg class="mias-scrollcue-chev" width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-top:-12px;"><path d="M6 9l6 6 6-6"></path></svg>
+      </a>
+    </div>
   </div>
 
   <!-- ============ SELECTED WORK ============ -->

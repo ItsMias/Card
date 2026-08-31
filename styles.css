@@ -25,6 +25,34 @@ body{ margin:0; background:#0b0717; }
 @keyframes paneItemIn { from{ opacity:0; transform:translateY(18px); filter:blur(5px); } to{ opacity:1; transform:translateY(0); filter:blur(0); } }
 @keyframes paneNumIn { from{ opacity:0; transform:translateX(16px); } to{ opacity:1; transform:translateX(0); } }
 
+/* ---- hero scroll cue ---- */
+/* the pair fades in, then pulses the site's cyan from ~1.5s so the cue is
+   moving before a visitor decides to leave; the wrapper owns the fade so it
+   can retire mid-pulse and come back when the visitor returns to the top */
+@keyframes cueIn { from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:translateY(0); } }
+@keyframes cuePulse {
+  0%,100%{ color:#8f86ad; filter:drop-shadow(0 0 0 rgba(87,224,221,0)); }
+  50%{ color:#57e0dd; filter:drop-shadow(0 0 9px rgba(87,224,221,.75)); }
+}
+@keyframes cueNudge { 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(4px); } }
+
+.mias-scrollcue{ transition:opacity .5s ease; }
+.mias-scrollcue.is-gone{ opacity:0; }
+.mias-scrollcue-in{ opacity:0; pointer-events:auto; animation:cueIn .7s cubic-bezier(.22,1,.36,1) .6s both; }
+/* faded out it must not swallow clicks meant for the page behind it */
+.mias-scrollcue.is-gone .mias-scrollcue-in{ pointer-events:none; }
+/* identical timing on both arrows so the pair moves as a single unit */
+.mias-scrollcue-chev{ animation:cuePulse 2.6s ease-in-out 1.5s infinite, cueNudge 2.6s ease-in-out 1.5s infinite; }
+/* !important so the hover state outranks the running pulse */
+.mias-scrollcue-in:hover .mias-scrollcue-chev{ color:#57e0dd !important; filter:drop-shadow(0 0 11px rgba(87,224,221,.85)) !important; }
+@media (max-width:640px){ .mias-scrollcue{ bottom:10px !important; } }
+/* short/landscape phones: the hero copy already fills the frame */
+@media (max-height:560px){ .mias-scrollcue{ display:none !important; } }
+@media (prefers-reduced-motion: reduce){
+  .mias-scrollcue-in{ opacity:1; animation:none; }
+  .mias-scrollcue-chev{ color:#57e0dd !important; animation:none; }
+}
+
 /* ---- what-i-do feature tabs ---- */
 .mias-tab-title{ display:inline-block; color:#6f6790; }
 .mias-tab[aria-selected="true"] .mias-tab-title{ color:#f3f1fa; }

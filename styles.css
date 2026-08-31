@@ -97,21 +97,31 @@ body{ margin:0; background:#0b0717; }
 .mias-social:hover{ color:#57e0dd !important; filter:drop-shadow(0 0 8px rgba(87,224,221,.8)); }
 
 /* ---- work cards (home) ---- */
-.mias-card{ position:relative; isolation:isolate; transition:transform .45s cubic-bezier(.2,.7,.2,1), border-color .45s ease, box-shadow .45s ease; }
-.mias-card:hover{ transform:translateY(-8px) scale(1.025); border-color:rgba(245,169,184,.5) !important; box-shadow:0 26px 50px -18px rgba(245,169,184,.45), 0 0 0 1px rgba(245,169,184,.2); }
+/* One timing family, one moving part per layer. The card used to scale as
+   well as lift, which compounded with the thumbnail's own zoom (1.025 x 1.06
+   on two different clocks) and re-rasterised the card text mid-transition.
+   Now the card only lifts; the image carries the zoom and trails it slightly,
+   which reads as depth instead of two separate moves. */
+.mias-card{ position:relative; isolation:isolate; transition:transform .4s cubic-bezier(.2,.7,.2,1), border-color .4s ease, box-shadow .4s ease; }
+.mias-card:hover{ transform:translateY(-8px); border-color:rgba(245,169,184,.5) !important; box-shadow:0 26px 50px -18px rgba(245,169,184,.45), 0 0 0 1px rgba(245,169,184,.2); }
 
 /* thumbnail: the img and its dark tint live inside one zoom container,
    so the tint scales with the image and can never uncover it */
 .mias-thumb{ position:relative; aspect-ratio:16/9; overflow:hidden; isolation:isolate; background:#0e0820; }
-.mias-thumb-zoom{ position:absolute; inset:0; transition:transform .7s cubic-bezier(.2,.7,.2,1); }
+/* promoted to its own layer so the zoom doesn't re-rasterise the image */
+.mias-thumb-zoom{ position:absolute; inset:0; will-change:transform; transition:transform .55s cubic-bezier(.2,.7,.2,1); }
 .mias-thumb-zoom::after{ content:""; position:absolute; inset:-1px; background:linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,.45) 78%, rgba(0,0,0,.85) 100%); pointer-events:none; }
 .mias-thumb-zoom img{ width:100%; height:100%; display:block; object-fit:cover; }
-.mias-feature:hover .mias-thumb-zoom{ transform:scale(1.06); }
+.mias-feature:hover .mias-thumb-zoom{ transform:scale(1.05); }
 /* CTA space is always reserved (fixed height) so revealing it on hover
    never changes the card's height and shifts the page */
-.mias-cta{ display:inline-flex; align-items:flex-start; gap:8px; font-family:'Outfit',sans-serif; font-weight:600; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#F5A9B8; height:22px; margin-top:7px; opacity:0; transform:translateY(6px); transition:opacity .4s ease, transform .4s ease; }
+.mias-cta{ display:inline-flex; align-items:flex-start; gap:8px; font-family:'Outfit',sans-serif; font-weight:600; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#F5A9B8; height:22px; margin-top:7px; opacity:0; transform:translateY(4px); transition:opacity .35s ease, transform .35s cubic-bezier(.2,.7,.2,1); }
 .mias-card:hover .mias-cta{ opacity:1; transform:translateY(0); }
 .mias-arrow{ margin-top:1px; flex-shrink:0; }
+@media (prefers-reduced-motion: reduce){
+  .mias-card:hover{ transform:none; }
+  .mias-feature:hover .mias-thumb-zoom{ transform:none; }
+}
 
 /* ---- case-study banner ---- */
 .mias-banner img, .mias-banner{ transition:filter .5s ease; }

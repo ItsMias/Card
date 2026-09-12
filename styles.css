@@ -77,6 +77,10 @@ body{ margin:0; background:#0b0717; }
 .mias-link{ transition:color .25s ease, opacity .25s ease; }
 .mias-link:hover{ color:#57e0dd !important; }
 
+/* testimonial attribution → project page: recolour the inline-styled name/role on hover */
+.mias-testi-link span{ transition:color .25s ease; }
+.mias-testi-link:hover span{ color:#F5A9B8 !important; }
+
 /* nav links — sliding underline matching the scroll sliver */
 .mias-navlink{ position:relative; }
 .mias-navlink::after{ content:""; position:absolute; left:0; right:0; bottom:-7px; height:2px; background:#57e0dd; box-shadow:0 0 8px rgba(87,224,221,.5); transform:scaleX(0); transform-origin:left; transition:transform .3s cubic-bezier(.2,.7,.2,1); }

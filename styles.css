@@ -90,6 +90,11 @@ body{ margin:0; background:#0b0717; }
 
 /* ---- buttons — glow only, no bob ---- */
 .mias-btn{ transition:box-shadow .35s ease, background .25s ease; }
+.mias-copy-row{ display:inline-grid; grid-auto-flow:column; grid-auto-columns:1fr; gap:16px; }
+@media (max-width:600px){ .mias-copy-row{ grid-auto-flow:row; } }
+.mias-copy{ font-family:inherit; cursor:pointer; border:none; display:inline-flex; align-items:center; justify-content:center; gap:12px; font-weight:600; font-size:15px; letter-spacing:.04em; color:#0b0717; background:#57e0dd; padding:18px 32px; border-radius:2px; box-shadow:0 10px 40px rgba(87,224,221,.3); }
+.mias-copy svg{ flex:none; }
+.mias-copy.is-copied{ background:#F5A9B8; box-shadow:0 10px 40px rgba(245,169,184,.4); }
 .mias-btn:hover{ box-shadow:0 0 0 1px rgba(87,224,221,.4), 0 14px 34px -10px rgba(87,224,221,.6); }
 
 /* ---- external links (case-study sidebar/body) ---- */
@@ -99,6 +104,9 @@ body{ margin:0; background:#0b0717; }
 /* ---- socials — icon glow only, no box ---- */
 .mias-social{ transition:color .25s ease, filter .3s ease; }
 .mias-social:hover{ color:#57e0dd !important; filter:drop-shadow(0 0 8px rgba(87,224,221,.8)); }
+/* ultracode easter egg: GitHub hover fills the footer with a sparkling cell field */
+.mias-ultra{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:0; mix-blend-mode:plus-lighter; opacity:.65; }
+.mias-contact-foot > :not(.mias-ultra){ position:relative; z-index:1; }
 
 /* ---- work cards (home) ---- */
 /* One timing family, one moving part per layer. The card used to scale as

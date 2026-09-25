@@ -135,13 +135,14 @@
     Array.prototype.forEach.call(document.querySelectorAll('.mias-copy'), function (btn) {
       var text = btn.getAttribute('data-copy');
       var label = btn.querySelector('.mias-copy-label');
+      var shown = label.textContent; // may differ from what's copied (Discord: no @)
       var copyTimer;
       var done = function () {
         label.textContent = 'Copied!';
         btn.classList.add('is-copied');
         clearTimeout(copyTimer);
         copyTimer = setTimeout(function () {
-          label.textContent = text;
+          label.textContent = shown;
           btn.classList.remove('is-copied');
         }, 3200);
       };

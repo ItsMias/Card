@@ -14,6 +14,47 @@
       });
     }
 
+    /* ---- nav underline speed cap ---- */
+    // Wide links would otherwise sweep faster than short ones; stretch the
+    // duration so the line never moves faster than UL_MAX_SPEED px/s.
+    var UL_MAX_SPEED = 150, UL_MIN_DUR = 300;
+    var navlinks = document.querySelectorAll('.mias-navlink');
+    var updateUnderlineSpeed = function () {
+      navlinks.forEach(function (a) {
+        var w = a.getBoundingClientRect().width;
+        a.style.setProperty('--ul-dur', Math.max(UL_MIN_DUR, w / UL_MAX_SPEED * 1000) + 'ms');
+      });
+    };
+    if (navlinks.length) {
+      window.addEventListener('resize', updateUnderlineSpeed);
+      window.addEventListener('load', updateUnderlineSpeed);
+      updateUnderlineSpeed();
+    }
+
+    /* ---- nav underline: always play the full sweep ---- */
+    // The line finishes drawing in before it leaves, and finishes leaving
+    // before it draws in again, so a quick brush past still plays it all.
+    document.documentElement.classList.add('ul-js');
+    navlinks.forEach(function (a) {
+      var hovered = false, state = 'idle';
+      var dur = function () { return parseFloat(a.style.getPropertyValue('--ul-dur')) || UL_MIN_DUR; };
+      var step = function () {
+        if (state === 'idle' && hovered) {
+          a.classList.add('ul-on'); state = 'growing';
+        } else if (state === 'shown' && !hovered) {
+          a.classList.remove('ul-on'); state = 'leaving';
+        } else {
+          return;
+        }
+        setTimeout(function () {
+          state = (state === 'growing') ? 'shown' : 'idle';
+          step();
+        }, dur());
+      };
+      a.addEventListener('mouseenter', function () { hovered = true; step(); });
+      a.addEventListener('mouseleave', function () { hovered = false; step(); });
+    });
+
     /* ---- top progress sliver ---- */
     var prog = document.getElementById('mias-progress');
     var updateBar = function () {
@@ -29,17 +70,138 @@
       updateBar();
     }
 
+    /* ---- wordmark build pieces (see "wordmark build" in styles.css) ---- */
+    // Splits an element's text into per-letter .wm-ch pieces plus a few stray
+    // glitch pixels; adding .is-in / .is-out to it then plays the build / exit.
+    var LINE_Y = ['18%', '78%', '50%', '30%', '66%', '42%', '84%'];
+    var SPREAD_JIT = [-.3, .2, -.25, .15, .3, -.2, .25];
+    // fin = { at: index, kind: 't' }: that letter skips the normal
+    // left-to-right build and is constructed last from its strokes, like the
+    // T at the end of Valorant's logo (crossbar flies in, stem drops and
+    // overshoots).
+    // Where a T's crossbar ends, as a % of its glyph box from the top: the
+    // crossbar and stem copies are clipped at this line so they rejoin
+    // exactly. Renders the glyph to a canvas, finds the run of full-width ink
+    // rows at the cap top, then maps that onto the DOM box via its baseline.
+    var crossbarCut = function (g) {
+      try {
+        var cs = getComputedStyle(g), fs = parseFloat(cs.fontSize);
+        var cv = document.createElement('canvas'), W = Math.ceil(fs * 1.5), H = Math.ceil(fs * 2), base = Math.round(fs * 1.4);
+        cv.width = W; cv.height = H;
+        var ctx = cv.getContext('2d');
+        ctx.font = cs.fontWeight + ' ' + fs + 'px ' + cs.fontFamily;
+        ctx.fillText(g.textContent, 0, base);
+        var px = ctx.getImageData(0, 0, W, H).data, rows = [], maxW = 0;
+        for (var y = 0; y < H; y++) {
+          var n = 0;
+          for (var x = 0; x < W; x++) if (px[(y * W + x) * 4 + 3] > 128) n++;
+          rows.push(n); if (n > maxW) maxW = n;
+        }
+        var top = rows.findIndex(function (n) { return n > maxW * 0.6; });
+        if (top < 0) return '30%';
+        var bottom = top;
+        while (bottom + 1 < H && rows[bottom + 1] > maxW * 0.6) bottom++;
+        // baseline of the DOM glyph box, via a zero-size inline probe
+        var probe = document.createElement('i');
+        probe.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline';
+        g.appendChild(probe);
+        var box = g.getBoundingClientRect(), baseY = probe.getBoundingClientRect().top - box.top;
+        g.removeChild(probe);
+        // a hair below the crossbar so the cut never shows as a seam
+        var cutY = baseY + (bottom + 1 - base) + fs * 0.02;
+        return Math.max(5, Math.min(95, cutY / box.height * 100)).toFixed(2) + '%';
+      } catch (e) { return '30%'; }
+    };
+    var buildWordmark = function (el, pixels, fin) {
+      var text = el.textContent.trim();
+      el.classList.add('wm-build');
+      el.setAttribute('aria-label', text);
+      el.textContent = '';
+      text.split('').forEach(function (ch, i) {
+        var c = document.createElement('span');
+        c.className = 'wm-ch';
+        c.setAttribute('aria-hidden', 'true');
+        c.style.setProperty('--i', i);
+        c.style.setProperty('--ly', LINE_Y[i % LINE_Y.length]);
+        // exit: uneven spread out from the centre, connectors on some letters
+        c.style.setProperty('--d', i - (text.length - 1) / 2 + SPREAD_JIT[i % SPREAD_JIT.length]);
+        c.style.setProperty('--cn', i % 2);
+        c.innerHTML = '<span class="wm-g"></span><span class="wm-s wm-s1"></span>' +
+          '<span class="wm-s wm-s2"></span><span class="wm-ln"></span>';
+        c.querySelectorAll('.wm-g, .wm-s').forEach(function (s) { s.textContent = ch; });
+        if (fin && fin.at === i) {
+          c.classList.add('wm-fin', 'wm-fin-' + fin.kind);
+          // starts once the last regular letter is mostly built
+          c.style.setProperty('--fd', ((text.length - 1) * 105 + 380) + 'ms');
+        }
+        el.appendChild(c);
+      });
+      var finCh = el.querySelector('.wm-fin-t');
+      if (finCh) {
+        var cut = function () { finCh.style.setProperty('--cut', crossbarCut(finCh.querySelector('.wm-g'))); };
+        cut();
+        if (document.fonts) document.fonts.ready.then(cut);
+      }
+      pixels.forEach(function (p) {
+        var px = document.createElement('span');
+        px.className = 'wm-px';
+        px.setAttribute('aria-hidden', 'true');
+        px.style.setProperty('--px', p[0]);
+        px.style.setProperty('--py', p[1]);
+        px.style.setProperty('--pd', p[2]);
+        el.appendChild(px);
+      });
+    };
+
     /* ---- wordmark reveal (home only — detected by the hero #home) ---- */
     var mark = document.getElementById('nav-wordmark');
     if (mark && document.getElementById('home')) {
+      buildWordmark(mark, [['-10px', '2px', '0ms'], ['38%', '-7px', '220ms'], ['71%', '120%', '440ms'], ['104%', '20%', '650ms']],
+        { at: mark.textContent.trim().indexOf('T'), kind: 't' });
+      // letters are clipped now, so the container itself can stay visible
+      mark.style.opacity = '1';
+      mark.style.transform = 'none';
+
+      // build only once the hero's last row (the buttons) has slid fully up
+      // behind the nav, so the mark never overlaps the hero's own text
+      var heroPad = document.querySelector('#home .mias-hero-pad');
+      var heroEnd = heroPad && heroPad.lastElementChild;
+      var nav = document.querySelector('.mias-nav');
+      var shown = null;
       var onScroll = function () {
-        var show = window.scrollY > window.innerHeight * 0.6;
-        mark.style.opacity = show ? '1' : '0';
+        var show = heroEnd && nav
+          ? heroEnd.getBoundingClientRect().bottom < nav.getBoundingClientRect().bottom
+          : window.scrollY > window.innerHeight * 0.6;
+        if (show === shown) return;
+        // the first check only hides; no exit animation for a mark never seen
+        if (shown === null && !show) { shown = false; return; }
+        shown = show;
+        mark.classList.toggle('is-in', show);
+        mark.classList.toggle('is-out', !show);
         mark.style.pointerEvents = show ? 'auto' : 'none';
-        mark.style.transform = show ? 'translateX(0)' : 'translateX(-8px)';
       };
       window.addEventListener('scroll', onScroll, { passive: true });
       onScroll();
+    }
+
+    /* ---- footer end card: ITSMIAS builds in on arrival ---- */
+    // Builds the same way as the nav wordmark (T finale included) once the
+    // card is well into view; resets silently once it has fully left the
+    // screen, so it plays again on the next visit to the bottom of the page.
+    var fEnd = document.querySelector('.mias-footer-end');
+    var fMark = fEnd && fEnd.querySelector('.mias-footer-endmark');
+    if (fMark) {
+      buildWordmark(fMark, [['-6%', '8%', '0ms'], ['40%', '-30%', '260ms'], ['72%', '115%', '480ms'], ['101%', '28%', '700ms']],
+        { at: fMark.textContent.trim().indexOf('T'), kind: 't' });
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+          var e = entries[0];
+          if (e.intersectionRatio >= 0.6) fMark.classList.add('is-in');
+          else if (!e.isIntersecting) fMark.classList.remove('is-in');
+        }, { threshold: [0, 0.6] }).observe(fEnd);
+      } else {
+        fMark.classList.add('is-in');
+      }
     }
 
     /* ---- hero scroll cue: away while scrolled down, back at the top ---- */

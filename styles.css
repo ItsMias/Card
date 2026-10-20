@@ -83,10 +83,145 @@ body{ margin:0; background:#0b0717; }
 
 /* nav links — sliding underline matching the scroll sliver */
 .mias-navlink{ position:relative; }
-.mias-navlink::after{ content:""; position:absolute; left:0; right:0; bottom:-7px; height:2px; background:#57e0dd; box-shadow:0 0 8px rgba(87,224,221,.5); transform:scaleX(0); transform-origin:left; transition:transform .3s cubic-bezier(.2,.7,.2,1); }
-.mias-navlink:hover::after{ transform:scaleX(1); }
+.mias-navlink::after{ content:""; position:absolute; left:0; right:0; bottom:-7px; height:2px; background:#57e0dd; box-shadow:0 0 8px rgba(87,224,221,.5); transform:scaleX(0); transform-origin:right; transition:transform var(--ul-dur, .3s) cubic-bezier(.2,.7,.2,1); }
+html:not(.ul-js) .mias-navlink:hover::after, .mias-navlink.ul-on::after{ transform:scaleX(1); transform-origin:left; }
 /* wordmark has .42em letter-spacing → trailing gap; trim the underline */
 #nav-wordmark.mias-navlink::after{ right:.42em; }
+
+/* ---- wordmark build (.wm-build: the nav ITSMIAS and the footer's giant MIAS;
+   script.js splits the text into .wm-ch pieces) ----
+   Valorant-style construction, letter by letter: a cyan line sweeps across,
+   two offset slices of the glyph slide in from opposite sides and lock
+   together, then the real glyph wipes in cyan and cools to white. Leaving,
+   the whole mark goes at once, like Valorant's logo out: glyphs are cut down
+   to a thin band, spread apart from the centre with connector lines and a
+   cyan copy, smear sideways, then hard-cut. The glyph has no fill on the way
+   in, so hover colour still reaches it once the build has finished.
+   Per-instance knobs: --wm-hi construction colour, --wm-ls the mark's
+   letter-spacing, --wm-line/--wm-dot line and pixel size, --wm-glow,
+   --wm-over how far the T finale's stem overshoots (scaleY),
+   --wm-spread/--wm-smear how far the exit pushes letters apart and sideways.
+   The settled glyph and the exit connectors use the mark's own colour. */
+.wm-build{ white-space:nowrap; --wm-over:2.4; --wm-hi:#57e0dd; --wm-ls:.42em; --wm-line:2px; --wm-dot:3px; --wm-glow:0 0 8px rgba(87,224,221,.6); --wm-spread:1; --wm-smear:1.2em; }
+/* phones: shorter exit smear so it never runs into the menu button */
+@media (max-width:760px){ #nav-wordmark{ --wm-smear:.3em; } }
+.wm-build .wm-ch{ position:relative; display:inline-block; }
+.wm-build .wm-g{ display:inline-block; clip-path:inset(0 100% 0 0); }
+.wm-build .wm-s, .wm-build .wm-ln, .wm-build .wm-px{ position:absolute; pointer-events:none; opacity:0; }
+.wm-build .wm-s{ left:0; top:0; }
+.wm-build .wm-s1{ color:var(--wm-hi); clip-path:inset(0 0 56% 0); }
+.wm-build .wm-s2{ color:inherit; clip-path:inset(56% 0 0 0); }
+.wm-build .wm-ln{ left:-.18em; right:calc(var(--wm-ls) - .18em); top:var(--ly, 50%); height:var(--wm-line); background:var(--wm-hi); box-shadow:var(--wm-glow); }
+.wm-build .wm-px{ width:var(--wm-dot); height:var(--wm-dot); background:var(--wm-hi); left:var(--px); top:var(--py); }
+
+.wm-build.is-in .wm-g{ clip-path:none; animation:wmGlyph .85s cubic-bezier(.2,.7,.2,1) backwards; animation-delay:calc(var(--i) * 105ms); }
+.wm-build.is-in .wm-s1{ animation:wmSlice1 .85s cubic-bezier(.2,.7,.2,1); animation-delay:calc(var(--i) * 105ms); }
+.wm-build.is-in .wm-s2{ animation:wmSlice2 .85s cubic-bezier(.2,.7,.2,1); animation-delay:calc(var(--i) * 105ms); }
+.wm-build.is-in .wm-ln{ animation:wmLine .85s cubic-bezier(.7,0,.2,1); animation-delay:calc(var(--i) * 105ms - 80ms); }
+.wm-build.is-in .wm-px{ animation:wmPixel 1.25s steps(1, end); animation-delay:var(--pd); }
+
+/* finale letter (.wm-fin): skips its normal turn and is built last from its
+   strokes, like the T in Valorant's logo. T: the crossbar (top copy, cut at
+   --cut, measured by script.js) flies in from the right as a long bar and
+   shrinks into place, then the stem (bottom copy) drops in from above,
+   overshoots past the baseline and snaps back. The real glyph swaps in
+   once the pieces have rejoined. */
+.wm-build.is-in .wm-fin .wm-g{ animation:finGlyph 1.2s steps(1, end) backwards; animation-delay:var(--fd); }
+.wm-build.is-in .wm-fin .wm-ln{ animation:none; }
+.wm-build.is-in .wm-fin-t .wm-s1{ color:inherit; clip-path:inset(0 0 calc(100% - var(--cut, 30%)) 0); transform-origin:0 50%; animation:finBar 1.2s cubic-bezier(.2,.7,.2,1); animation-delay:var(--fd); }
+.wm-build.is-in .wm-fin-t .wm-s2{ clip-path:inset(var(--cut, 30%) 0 0 0); transform-origin:50% var(--cut, 30%); animation:finStem 1.2s cubic-bezier(.2,.7,.2,1); animation-delay:var(--fd); }
+@keyframes finGlyph{ 0%{ opacity:0; } 80%{ opacity:1; } }
+@keyframes finBar{
+  0%   { opacity:0; transform:translateX(1.8em) scaleX(2.6); color:var(--wm-hi); }
+  4%   { opacity:1; }
+  30%  { transform:translateX(.3em) scaleX(1.35); color:var(--wm-hi); }
+  42%  { transform:translateX(-.03em) scaleX(1); }
+  48%  { transform:none; }
+  80%  { opacity:1; transform:none; }
+  81%,100%{ opacity:0; transform:none; }
+}
+@keyframes finStem{
+  0%,32%{ opacity:0; transform:translateY(-1.1em) scaleY(1); color:var(--wm-hi); }
+  35%  { opacity:1; }
+  52%  { transform:translateY(0) scaleY(var(--wm-over)); color:var(--wm-hi); }
+  64%  { transform:translateY(0) scaleY(.9); }
+  72%  { transform:translateY(0) scaleY(1.04); }
+  78%  { transform:none; }
+  80%  { opacity:1; transform:none; }
+  81%,100%{ opacity:0; transform:none; }
+}
+
+.wm-build.is-out .wm-ch{ isolation:isolate; }
+.wm-build.is-out .wm-g{ animation:wmGlyphOut .3s linear both; }
+.wm-build.is-out .wm-s1{ z-index:-1; animation:wmCyanOut .3s linear both; }
+.wm-build.is-out .wm-ln{ left:.1em; right:-.1em; top:58%; height:var(--wm-line); background:currentColor; box-shadow:none; animation:wmLineOut .3s linear both; }
+.wm-build.is-out .wm-px{ animation:wmPixel .45s steps(1, end); }
+
+@keyframes wmLine{
+  0%  { opacity:1; clip-path:inset(0 100% 0 0); }
+  38% { opacity:1; clip-path:inset(0 0 0 0); }
+  100%{ opacity:1; clip-path:inset(0 0 0 100%); }
+}
+@keyframes wmSlice1{
+  0%,18%{ opacity:0; transform:translateX(-.55em); }
+  30%   { opacity:1; transform:translateX(-.22em); }
+  48%   { opacity:1; transform:translateX(.06em); }
+  58%   { opacity:1; transform:translateX(0); }
+  64%   { opacity:0; transform:translateX(0); }
+  100%  { opacity:0; }
+}
+@keyframes wmSlice2{
+  0%,24%{ opacity:0; transform:translateX(.5em); }
+  36%   { opacity:1; transform:translateX(.18em); }
+  52%   { opacity:1; transform:translateX(-.05em); }
+  60%   { opacity:1; transform:translateX(0); }
+  66%   { opacity:0; transform:translateX(0); }
+  100%  { opacity:0; }
+}
+@keyframes wmGlyph{
+  0%,40%{ clip-path:inset(0 100% 0 0); color:var(--wm-hi); opacity:1; }
+  60%   { clip-path:inset(0 0 0 0); color:var(--wm-hi); opacity:1; }
+  66%   { opacity:.35; }
+  72%   { opacity:1; }
+  100%  { clip-path:inset(0 0 0 0); }
+}
+/* exit timing: snap into the band (ease-out), spread evenly, then the
+   smear accelerates (ease-in) into a hard cut — no dead frames at the end */
+@keyframes wmGlyphOut{
+  0%      { clip-path:inset(0 0 0 0); transform:none; opacity:1; animation-timing-function:cubic-bezier(.2,.8,.3,1); }
+  18%     { clip-path:inset(30% 0 24% 0); transform:translateX(calc(var(--d) * var(--wm-spread) * .25em)); animation-timing-function:linear; }
+  50%     { clip-path:inset(42% 0 34% 0); transform:translateX(calc(var(--d) * var(--wm-spread) * .9em)) scaleX(1.15); animation-timing-function:cubic-bezier(.5,0,1,1); }
+  88%     { clip-path:inset(47% 0 40% 0); transform:translateX(calc(var(--d) * var(--wm-spread) * 1.1em + var(--wm-smear))) scaleX(2.4); opacity:1; }
+  89%,100%{ clip-path:inset(47% 0 40% 0); transform:translateX(calc(var(--d) * var(--wm-spread) * 1.1em + var(--wm-smear))) scaleX(2.4); opacity:0; }
+}
+@keyframes wmCyanOut{
+  0%,8%   { clip-path:inset(30% 0 24% 0); transform:translateX(calc(var(--d) * var(--wm-spread) * .25em - .2em)); opacity:0; animation-timing-function:cubic-bezier(.2,.8,.3,1); }
+  18%     { clip-path:inset(30% 0 24% 0); transform:translateX(calc(var(--d) * var(--wm-spread) * .25em - .2em)); opacity:1; animation-timing-function:linear; }
+  50%     { clip-path:inset(42% 0 34% 0); transform:translateX(calc(var(--d) * var(--wm-spread) * .9em - .3em)) scaleX(1.2); animation-timing-function:cubic-bezier(.5,0,1,1); }
+  88%     { clip-path:inset(47% 0 40% 0); transform:translateX(calc(var(--d) * var(--wm-spread) * 1.1em + var(--wm-smear) + .5em)) scaleX(2.8); opacity:1; }
+  89%,100%{ clip-path:inset(47% 0 40% 0); transform:translateX(calc(var(--d) * var(--wm-spread) * 1.1em + var(--wm-smear) + .5em)) scaleX(2.8); opacity:0; }
+}
+@keyframes wmLineOut{
+  0%,12%  { transform:translateX(calc(var(--d) * var(--wm-spread) * .25em)); opacity:0; animation-timing-function:cubic-bezier(.2,.8,.3,1); }
+  20%     { transform:translateX(calc(var(--d) * var(--wm-spread) * .3em)); opacity:var(--cn); animation-timing-function:linear; }
+  50%     { transform:translateX(calc(var(--d) * var(--wm-spread) * .9em + .3em)) scaleX(2.2); animation-timing-function:cubic-bezier(.5,0,1,1); }
+  88%     { transform:translateX(calc(var(--d) * var(--wm-spread) * 1.1em + var(--wm-smear))) scaleX(3); opacity:var(--cn); }
+  89%,100%{ transform:translateX(calc(var(--d) * var(--wm-spread) * 1.1em + var(--wm-smear))) scaleX(3); opacity:0; }
+}
+@keyframes wmPixel{
+  0%  { opacity:1; }
+  18% { opacity:0; }
+  34% { opacity:1; }
+  46% { opacity:0; }
+  100%{ opacity:0; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .wm-build .wm-s, .wm-build .wm-ln, .wm-build .wm-px{ display:none; }
+  .wm-build .wm-g{ clip-path:none; opacity:0; transition:opacity .3s ease; }
+  .wm-build.is-in .wm-g{ opacity:1; animation:none; }
+  .wm-build.is-out .wm-g{ animation:none; }
+}
 
 /* ---- buttons — glow only, no bob ---- */
 .mias-btn{ transition:box-shadow .35s ease, background .25s ease; }
@@ -143,6 +278,39 @@ body{ margin:0; background:#0b0717; }
 .mias-presence:hover #mias-presence-name{ color:#57e0dd; }
 
 /* ============================================================
+   Footer — columns, then a centred ITSMIAS end card (like the closing
+   logo of Valorant's intro) that builds in with the wordmark animation
+   when it scrolls into view (script.js).
+   ============================================================ */
+/* the footer overlaps the (empty) bottom padding of the section above by
+   140px and fades in over it, so there is no hard seam between them */
+.mias-footer{ position:relative; overflow:hidden; margin-top:-140px; background:linear-gradient(180deg, rgba(11,7,23,0) 0, #0b0717 140px); }
+.mias-footer-top{ position:relative; padding:180px 56px 0; }
+.mias-footer--plain{ margin-top:0; }
+.mias-footer--plain .mias-footer-top{ padding-top:70px; }
+.mias-footer-cols{ display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:40px; max-width:1240px; margin:0 auto; }
+.mias-footer-h{ margin:0 0 18px; font-family:'Syne GFix','Syne',sans-serif; font-weight:600; font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:#57e0dd; }
+.mias-footer-list{ list-style:none; margin:0; padding:0; display:grid; gap:12px; }
+.mias-footer-list a, .mias-footer-contact a{ display:inline-flex; align-items:center; gap:11px; color:#cfc8e2; text-decoration:none; font-size:15px; transition:color .2s ease; }
+.mias-footer-contact a{ color:#f3f1fa; }
+.mias-footer-list a:hover, .mias-footer-contact a:hover{ color:#57e0dd; }
+.mias-footer-list svg, .mias-footer-contact svg{ width:16px; height:16px; flex-shrink:0; color:#8f86ad; transition:color .2s ease, filter .3s ease; }
+.mias-footer-list a:hover svg, .mias-footer-contact a:hover svg{ color:#57e0dd; filter:drop-shadow(0 0 6px rgba(87,224,221,.8)); }
+.mias-footer-list .mias-ext{ width:12px; height:12px; margin-left:-4px; opacity:.6; }
+.mias-footer-blurb{ margin:18px 0 24px; max-width:340px; font-weight:300; font-size:15px; line-height:1.6; color:#8f86ad; }
+.mias-footer-contact{ display:grid; gap:10px; justify-items:start; }
+
+.mias-footer-end{ display:flex; justify-content:center; padding:150px 24px 130px; }
+.mias-footer-endmark{ font-family:'Syne GFix','Syne',sans-serif; font-weight:800; font-size:clamp(34px,5.4vw,76px); line-height:1.1; letter-spacing:.42em; color:#ece9f5;
+  padding-left:.42em; /* balances the trailing letter-spacing so it centres */
+  --wm-line:max(2px,.035em); --wm-dot:max(3px,.05em); --wm-over:2.2; }
+@media (min-width:861px) and (max-width:1100px){ .mias-footer-cols{ grid-template-columns:1.4fr 1fr 1fr 1fr; gap:28px; } }
+@media (max-width:860px){
+  .mias-footer-cols{ grid-template-columns:1fr 1fr; gap:36px 24px; }
+  .mias-footer-brand{ grid-column:1 / -1; }
+}
+
+/* ============================================================
    Responsive
    ============================================================ */
 .mias-hamburger{ display:none; cursor:pointer; }
@@ -164,9 +332,9 @@ body{ margin:0; background:#0b0717; }
   #work, #about, #testimonials, #services, #contact, .mias-hero-pad{ padding-left:22px !important; padding-right:22px !important; }
   div[style*="repeat(auto-fit"]{ grid-template-columns:1fr !important; }
   div[style*="max-width: 1180px"]{ padding-left:22px !important; padding-right:22px !important; }
-  .mias-contact-foot{ margin-left:-22px !important; margin-right:-22px !important; padding-left:22px !important; padding-right:22px !important; }
+  .mias-footer-top{ padding-left:22px; padding-right:22px; }
   #contact h2{ font-size:clamp(34px,11vw,92px) !important; }
-  article[id^="proj-"], .mias-foot{ padding-left:22px !important; padding-right:22px !important; }
+  article[id^="proj-"]{ padding-left:22px !important; padding-right:22px !important; }
 }
 
 @media (max-width:560px){

@@ -136,6 +136,11 @@
         }
         el.appendChild(c);
       });
+      // most negative exit offset, so a mark can anchor its spread on the left
+      var dmin = Math.min.apply(null, text.split('').map(function (_, i) {
+        return i - (text.length - 1) / 2 + SPREAD_JIT[i % SPREAD_JIT.length];
+      }));
+      el.style.setProperty('--wm-dmin', -dmin);
       var finCh = el.querySelector('.wm-fin-t');
       if (finCh) {
         var cut = function () { finCh.style.setProperty('--cut', crossbarCut(finCh.querySelector('.wm-g'))); };

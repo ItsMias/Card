@@ -100,11 +100,17 @@ html:not(.ul-js) .mias-navlink:hover::after, .mias-navlink.ul-on::after{ transfo
    Per-instance knobs: --wm-hi construction colour, --wm-ls the mark's
    letter-spacing, --wm-line/--wm-dot line and pixel size, --wm-glow,
    --wm-over how far the T finale's stem overshoots (scaleY),
-   --wm-spread/--wm-smear how far the exit pushes letters apart and sideways.
+   --wm-spread/--wm-smear how far the exit pushes letters apart and sideways,
+   --wm-shift moves the spread's anchor off the centre.
    The settled glyph and the exit connectors use the mark's own colour. */
-.wm-build{ white-space:nowrap; --wm-over:2.4; --wm-hi:#57e0dd; --wm-ls:.42em; --wm-line:2px; --wm-dot:3px; --wm-glow:0 0 8px rgba(87,224,221,.6); --wm-spread:1; --wm-smear:1.2em; }
-/* phones: shorter exit smear so it never runs into the menu button */
-@media (max-width:760px){ #nav-wordmark{ --wm-smear:.3em; } }
+/* relative: the stray pixels and lines are placed against the mark itself */
+.wm-build{ position:relative; white-space:nowrap; --wm-over:2.4; --wm-hi:#57e0dd; --wm-ls:.42em; --wm-line:2px; --wm-dot:3px; --wm-glow:0 0 8px rgba(87,224,221,.6); --wm-spread:1; --wm-smear:1.2em; }
+/* the nav mark sits against the left edge, so its exit spreads rightwards
+   from the first letter (--wm-dmin, set by script.js, cancels the most
+   negative offset) instead of from the centre, and never runs off-screen */
+#nav-wordmark{ --wm-shift:var(--wm-dmin, 0); }
+/* phones: tighter spread and shorter smear so it never reaches the menu button */
+@media (max-width:760px){ #nav-wordmark{ --wm-smear:.1em; --wm-spread:.3; } }
 .wm-build .wm-ch{ position:relative; display:inline-block; }
 .wm-build .wm-g{ display:inline-block; clip-path:inset(0 100% 0 0); }
 .wm-build .wm-s, .wm-build .wm-ln, .wm-build .wm-px{ position:absolute; pointer-events:none; opacity:0; }
@@ -189,24 +195,24 @@ html:not(.ul-js) .mias-navlink:hover::after, .mias-navlink.ul-on::after{ transfo
    smear accelerates (ease-in) into a hard cut — no dead frames at the end */
 @keyframes wmGlyphOut{
   0%      { clip-path:inset(0 0 0 0); transform:none; opacity:1; animation-timing-function:cubic-bezier(.2,.8,.3,1); }
-  18%     { clip-path:inset(30% 0 24% 0); transform:translateX(calc(var(--d) * var(--wm-spread) * .25em)); animation-timing-function:linear; }
-  50%     { clip-path:inset(42% 0 34% 0); transform:translateX(calc(var(--d) * var(--wm-spread) * .9em)) scaleX(1.15); animation-timing-function:cubic-bezier(.5,0,1,1); }
-  88%     { clip-path:inset(47% 0 40% 0); transform:translateX(calc(var(--d) * var(--wm-spread) * 1.1em + var(--wm-smear))) scaleX(2.4); opacity:1; }
-  89%,100%{ clip-path:inset(47% 0 40% 0); transform:translateX(calc(var(--d) * var(--wm-spread) * 1.1em + var(--wm-smear))) scaleX(2.4); opacity:0; }
+  18%     { clip-path:inset(30% 0 24% 0); transform:translateX(calc((var(--d) + var(--wm-shift, 0)) * var(--wm-spread) * .25em)); animation-timing-function:linear; }
+  50%     { clip-path:inset(42% 0 34% 0); transform:translateX(calc((var(--d) + var(--wm-shift, 0)) * var(--wm-spread) * .9em)) scaleX(1.15); animation-timing-function:cubic-bezier(.5,0,1,1); }
+  88%     { clip-path:inset(47% 0 40% 0); transform:translateX(calc((var(--d) + var(--wm-shift, 0)) * var(--wm-spread) * 1.1em + var(--wm-smear))) scaleX(2.4); opacity:1; }
+  89%,100%{ clip-path:inset(47% 0 40% 0); transform:translateX(calc((var(--d) + var(--wm-shift, 0)) * var(--wm-spread) * 1.1em + var(--wm-smear))) scaleX(2.4); opacity:0; }
 }
 @keyframes wmCyanOut{
-  0%,8%   { clip-path:inset(30% 0 24% 0); transform:translateX(calc(var(--d) * var(--wm-spread) * .25em - .2em)); opacity:0; animation-timing-function:cubic-bezier(.2,.8,.3,1); }
-  18%     { clip-path:inset(30% 0 24% 0); transform:translateX(calc(var(--d) * var(--wm-spread) * .25em - .2em)); opacity:1; animation-timing-function:linear; }
-  50%     { clip-path:inset(42% 0 34% 0); transform:translateX(calc(var(--d) * var(--wm-spread) * .9em - .3em)) scaleX(1.2); animation-timing-function:cubic-bezier(.5,0,1,1); }
-  88%     { clip-path:inset(47% 0 40% 0); transform:translateX(calc(var(--d) * var(--wm-spread) * 1.1em + var(--wm-smear) + .5em)) scaleX(2.8); opacity:1; }
-  89%,100%{ clip-path:inset(47% 0 40% 0); transform:translateX(calc(var(--d) * var(--wm-spread) * 1.1em + var(--wm-smear) + .5em)) scaleX(2.8); opacity:0; }
+  0%,8%   { clip-path:inset(30% 0 24% 0); transform:translateX(calc((var(--d) + var(--wm-shift, 0)) * var(--wm-spread) * .25em - .2em)); opacity:0; animation-timing-function:cubic-bezier(.2,.8,.3,1); }
+  18%     { clip-path:inset(30% 0 24% 0); transform:translateX(calc((var(--d) + var(--wm-shift, 0)) * var(--wm-spread) * .25em - .2em)); opacity:1; animation-timing-function:linear; }
+  50%     { clip-path:inset(42% 0 34% 0); transform:translateX(calc((var(--d) + var(--wm-shift, 0)) * var(--wm-spread) * .9em - .3em)) scaleX(1.2); animation-timing-function:cubic-bezier(.5,0,1,1); }
+  88%     { clip-path:inset(47% 0 40% 0); transform:translateX(calc((var(--d) + var(--wm-shift, 0)) * var(--wm-spread) * 1.1em + var(--wm-smear) + .5em)) scaleX(2.8); opacity:1; }
+  89%,100%{ clip-path:inset(47% 0 40% 0); transform:translateX(calc((var(--d) + var(--wm-shift, 0)) * var(--wm-spread) * 1.1em + var(--wm-smear) + .5em)) scaleX(2.8); opacity:0; }
 }
 @keyframes wmLineOut{
-  0%,12%  { transform:translateX(calc(var(--d) * var(--wm-spread) * .25em)); opacity:0; animation-timing-function:cubic-bezier(.2,.8,.3,1); }
-  20%     { transform:translateX(calc(var(--d) * var(--wm-spread) * .3em)); opacity:var(--cn); animation-timing-function:linear; }
-  50%     { transform:translateX(calc(var(--d) * var(--wm-spread) * .9em + .3em)) scaleX(2.2); animation-timing-function:cubic-bezier(.5,0,1,1); }
-  88%     { transform:translateX(calc(var(--d) * var(--wm-spread) * 1.1em + var(--wm-smear))) scaleX(3); opacity:var(--cn); }
-  89%,100%{ transform:translateX(calc(var(--d) * var(--wm-spread) * 1.1em + var(--wm-smear))) scaleX(3); opacity:0; }
+  0%,12%  { transform:translateX(calc((var(--d) + var(--wm-shift, 0)) * var(--wm-spread) * .25em)); opacity:0; animation-timing-function:cubic-bezier(.2,.8,.3,1); }
+  20%     { transform:translateX(calc((var(--d) + var(--wm-shift, 0)) * var(--wm-spread) * .3em)); opacity:var(--cn); animation-timing-function:linear; }
+  50%     { transform:translateX(calc((var(--d) + var(--wm-shift, 0)) * var(--wm-spread) * .9em + .3em)) scaleX(2.2); animation-timing-function:cubic-bezier(.5,0,1,1); }
+  88%     { transform:translateX(calc((var(--d) + var(--wm-shift, 0)) * var(--wm-spread) * 1.1em + var(--wm-smear))) scaleX(3); opacity:var(--cn); }
+  89%,100%{ transform:translateX(calc((var(--d) + var(--wm-shift, 0)) * var(--wm-spread) * 1.1em + var(--wm-smear))) scaleX(3); opacity:0; }
 }
 @keyframes wmPixel{
   0%  { opacity:1; }

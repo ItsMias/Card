@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://itsmias.xyz/sitemap.xml
+Sitemap: https://itsmias.com/sitemap.xml

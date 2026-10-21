@@ -196,7 +196,7 @@
     var fEnd = document.querySelector('.mias-footer-end');
     var fMark = fEnd && fEnd.querySelector('.mias-footer-endmark');
     if (fMark) {
-      buildWordmark(fMark, [['-6%', '8%', '0ms'], ['40%', '-30%', '260ms'], ['72%', '115%', '480ms'], ['101%', '28%', '700ms']],
+      buildWordmark(fMark, [],
         { at: fMark.textContent.trim().indexOf('T'), kind: 't' });
       if ('IntersectionObserver' in window) {
         new IntersectionObserver(function (entries) {

@@ -235,8 +235,16 @@ html:not(.ul-js) .mias-navlink:hover::after, .mias-navlink.ul-on::after{ transfo
 @media (max-width:600px){ .mias-copy-row{ grid-auto-flow:row; } }
 .mias-copy{ font-family:inherit; cursor:pointer; border:none; display:inline-flex; align-items:center; justify-content:center; gap:12px; font-weight:600; font-size:15px; letter-spacing:.04em; color:#0b0717; background:#57e0dd; padding:18px 32px; border-radius:2px; box-shadow:0 10px 40px rgba(87,224,221,.3); }
 .mias-copy svg{ flex:none; }
+/* "Copied!" sits on top of the original label in the same grid cell, so the
+   button keeps its width instead of jumping when the text swaps */
+.mias-copy-label{ display:inline-grid; }
+.mias-copy-label::after{ content:'Copied!'; grid-area:1/1; justify-self:center; visibility:hidden; }
+.mias-copy-text{ grid-area:1/1; justify-self:center; }
+.mias-copy.is-copied .mias-copy-text{ visibility:hidden; }
+.mias-copy.is-copied .mias-copy-label::after{ visibility:visible; }
 .mias-copy.is-copied{ background:#F5A9B8; box-shadow:0 10px 40px rgba(245,169,184,.4); }
 .mias-btn:hover{ box-shadow:0 0 0 1px rgba(87,224,221,.4), 0 14px 34px -10px rgba(87,224,221,.6); }
+.mias-copy.is-copied:hover{ box-shadow:0 0 0 1px rgba(245,169,184,.5), 0 14px 34px -10px rgba(245,169,184,.7); }
 /* solid cyan button: brightens and its glow swells on hover, dips on press */
 .mias-btn-primary{ background:#57e0dd; box-shadow:0 8px 30px rgba(87,224,221,.25); }
 .mias-btn-primary:hover{ background:#6ae5e2; box-shadow:0 10px 34px rgba(87,224,221,.38); }

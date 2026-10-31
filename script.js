@@ -413,6 +413,22 @@
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitHeadings);
     }
 
+    /* ---- live local time (about, home only) ---- */
+    // the visitor's own clock, shown in The Hague's IANA zone so the browser's
+    // tz database handles the CET/CEST switch rather than a fixed offset
+    var clock = document.getElementById('mias-clock');
+    if (clock && window.Intl) {
+      var cTime = document.getElementById('mias-clock-time');
+      var fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Amsterdam', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+      var renderClock = function () {
+        cTime.textContent = fmt.format(new Date());
+        document.getElementById('mias-clock-now').style.display = 'inline';
+      };
+      renderClock();
+      // re-sync on each minute boundary so the time never lags behind
+      setTimeout(function () { renderClock(); setInterval(renderClock, 60000); }, 60000 - Date.now() % 60000);
+    }
+
     /* ---- live Discord presence via Lanyard (about, home only) ---- */
     var presence = document.getElementById('mias-presence');
     if (presence) {

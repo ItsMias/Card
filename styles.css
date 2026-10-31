@@ -291,6 +291,10 @@ html:not(.ul-js) .mias-navlink:hover::after, .mias-navlink.ul-on::after{ transfo
 /* ---- case-study banner ---- */
 .mias-banner img, .mias-banner{ transition:filter .5s ease; }
 
+/* ---- live local time (about) ---- */
+/* tabular digits so the time keeps a steady width as the minutes change */
+.mias-clock-time{ font-variant-numeric:tabular-nums; }
+
 /* ---- live Discord presence (about) ---- */
 #mias-presence-name{ transition:color .25s ease; }
 .mias-presence:hover #mias-presence-name{ color:#57e0dd; }
